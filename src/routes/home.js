@@ -1,17 +1,24 @@
 const { Layout } = require("../templates.js");
+const { getSession } = require("../model/session.js");
 
 function get(req, res) {
   const sid = req.signedCookies.sid;
   const session = getSession(sid);
   const title = "Confess your secrets!";
-  const content = /*html*/ `
-    <div class="Cover">
+  const content =
+    /*html*/
+    `<div class="Cover">
       <h1>${title}</h1>
-            
+      ${
+        session
+          ? /*html*/ `<form method="POST" action="/log-out"><button class="Button">Log out</button></form>`
+          : /*html*/ `<nav><a href="/sign-up">Sign Up</a> or <a href="/log-in">Log In</a></nav>`
+      }      
     </div>
   `;
   const body = Layout({ title, content });
   res.send(body);
+
   /**
    * [1] Read session ID from cookie
    * [2] Get session from DB
