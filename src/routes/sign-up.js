@@ -27,7 +27,6 @@ function get(req, res) {
 
 function post(req, res) {
   const { email, password } = req.body;
-  // const user = getUserByEmail(email);
   if (!email || !password) {
     res.status(400).send("<h1>Please choose a valid new password</h1>");
   } else {
@@ -37,7 +36,7 @@ function post(req, res) {
       res.cookie("sid", session_id, {
         signed: true,
         httpOnly: true,
-        maxAge: 6000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60,
         sameSite: "lax",
       });
       res.redirect(`/confessions/${user.id}`);
