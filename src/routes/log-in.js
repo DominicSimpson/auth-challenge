@@ -1,6 +1,8 @@
+const bcrypt = require("bcryptjs");
 const { getUserByEmail } = require("../model/user.js");
 const { Layout } = require("../templates.js");
 const { createSession } = require("../model/session.js");
+const { createUser } = require("../model/user.js");
 
 function get(req, res) {
   const title = "Log in to your account";
