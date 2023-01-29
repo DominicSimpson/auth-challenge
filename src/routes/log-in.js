@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const { getUserByEmail } = require("../model/user.js");
 const { Layout } = require("../templates.js");
 const { createSession } = require("../model/session.js");
-const { createUser } = require("../model/user.js");
 
 function get(req, res) {
   const title = "Log in to your account";
@@ -32,11 +31,10 @@ function post(req, res) {
   if (!email || !password || !user) {
     return res.status(400).send("<h1>Login failed</h1>");
   } else {
-    bcrypt.hash(password, user.hash).then((hash) => {
-      if (password !== user.hash) {
-        return res.status(400).send("<h1>Something doesn't match!</h1>");
+    bcrypt.compare(password, user.hash).then((match) => {
+      if (!match) {
+        return res.status(400).send("<h1>Log-in failed</h1>");
       } else {
-        const user = createUser(email, hash);
         const session_id = createSession(user.id);
         res.cookie("sid", session_id, {
           signed: true,

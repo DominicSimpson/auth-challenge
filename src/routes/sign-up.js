@@ -29,7 +29,7 @@ function post(req, res) {
   const { email, password } = req.body;
   // const user = getUserByEmail(email);
   if (!email || !password) {
-    res.status(400).send("<h1>Please choose a valid password</h1>");
+    res.status(400).send("<h1>Please choose a valid new password</h1>");
   } else {
     bcrypt.hash(password, 12).then((hash) => {
       const user = createUser(email, hash);
