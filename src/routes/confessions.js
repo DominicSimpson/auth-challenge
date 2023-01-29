@@ -14,6 +14,14 @@ function get(req, res) {
    * [4] Get the page owner from the URL params
    * [5] If the logged in user is not the page owner send a 401 response
    */
+
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  if (session) {
+    const html = `<form method="POST" action="/log-out"><button class="Button">Log out</button></form>`;
+    res.sent(html);
+  }
+
   const confessions = listConfessions(req.params.user_id);
   const title = "Your secrets";
   const content = /*html*/ `
