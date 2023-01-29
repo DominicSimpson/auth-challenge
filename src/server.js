@@ -6,6 +6,7 @@ const login = require("./routes/log-in.js");
 const logout = require("./routes/log-out.js");
 const confessions = require("./routes/confessions.js");
 const { removeSession } = require("./model/session.js");
+const { getSession } = require("./model/session.js");
 
 const body = express.urlencoded({ extended: false });
 const cookies = cookieParser(process.env.COOKIE_SECRET);
