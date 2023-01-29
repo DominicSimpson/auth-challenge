@@ -41,10 +41,11 @@ function post(req, res) {
           httpOnly: true,
           maxAge: 6000 * 60 * 60 * 24 * 7,
           sameSite: "lax",
-      });
-      res.redirect(`/confessions/${user.id}`);
+        });
+        res.redirect(`/confessions/${user.id}`);
       }
-  })
+    });
+  }
   /**
    * [1] Compare submitted password to stored hash
    * [2] If no match redirect back to same page so user can retry
