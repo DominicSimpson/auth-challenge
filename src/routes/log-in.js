@@ -1,5 +1,6 @@
 const { getUserByEmail } = require("../model/user.js");
 const { Layout } = require("../templates.js");
+const { createSession } = require("../model/session.js");
 
 function get(req, res) {
   const title = "Log in to your account";
@@ -28,8 +29,22 @@ function post(req, res) {
   const user = getUserByEmail(email);
   if (!email || !password || !user) {
     return res.status(400).send("<h1>Login failed</h1>");
-  }
-  res.send("to-do");
+  } else {
+    bcrypt.hash(password, user.hash).then((hash) => {
+      if (password !== user.hash) {
+        return res.status(400).send("<h1>Something doesn't match!</h1>");
+      } else {
+        const user = createUser(email, hash);
+        const session_id = createSession(user.id);
+        res.cookie("sid", session_id, {
+          signed: true,
+          httpOnly: true,
+          maxAge: 6000 * 60 * 60 * 24 * 7,
+          sameSite: "lax",
+      });
+      res.redirect(`/confessions/${user.id}`);
+      }
+  })
   /**
    * [1] Compare submitted password to stored hash
    * [2] If no match redirect back to same page so user can retry
