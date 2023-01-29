@@ -3,6 +3,7 @@ const {
   createConfession,
 } = require("../model/confessions.js");
 const { Layout } = require("../templates.js");
+const { getSession } = require("../model/session.js");
 
 function get(req, res) {
   /**
@@ -17,9 +18,10 @@ function get(req, res) {
 
   const sid = req.signedCookies.sid;
   const session = getSession(sid);
-  if (session) {
-    const html = `<form method="POST" action="/log-out"><button class="Button">Log out</button></form>`;
-    res.sent(html);
+  const current_user = session && session.user_id;
+  const page_owner = Number(req.params.user_id);
+  if (current_user !== page_owner) {
+    res.status(401).send("<h1>You are not allowed to view this page</h1>");
   }
 
   const confessions = listConfessions(req.params.user_id);
@@ -59,7 +61,12 @@ function post(req, res) {
    * [4] Use the user ID to create the confession in the DB
    * [5] Redirect back to the logged in user's confession page
    */
-  const current_user = Number(req.params.user_id);
+  const sid = req.signedCookies.sid;
+  const session = getSession(sid);
+  const current_user = session && session.user_id;
+  if (!req.body.content || !current_user) {
+    return res.status(401).send("<h1>Confession failed!</h1>");
+  }
   createConfession(req.body.content, current_user);
   res.redirect(`/confessions/${current_user}`);
 }
